@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -13,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace ShootEmAllDown
 {
@@ -27,8 +27,11 @@ namespace ShootEmAllDown
         public ObservableCollection<Enemy> Enemies { get; set; }
         public ObservableCollection<Enemy> RandomizedEnemies { get; set; }
 
+        private static DispatcherTimer timer = new DispatcherTimer();
+
         public MainWindow()
         {
+           
             InitializeComponent();
             DataContext = this;
             InitializeGame();
@@ -42,6 +45,7 @@ namespace ShootEmAllDown
             Enemies = new ObservableCollection<Enemy>();
             RandomizedEnemies = new ObservableCollection<Enemy>();
 
+            
             var random = new Random();
 
             // Create same amount of enemy types, ten in total.
@@ -60,9 +64,73 @@ namespace ShootEmAllDown
                     Enemies.Add(new UFO(lvl, planet));
                 }
             }
-
             RandomizedEnemies = UnsortEnemies(Enemies);
+
+            foreach (var enemy in RandomizedEnemies)
+            {
+                Canvas.SetTop(enemy.Rectangle, random.Next((int)(PlayField.Height - enemy.Rectangle.Height)));
+                Canvas.SetLeft(enemy.Rectangle, random.Next((int)(PlayField.Width - enemy.Rectangle.Width)));
+                PlayField.Children.Add(enemy.Rectangle);
+            }
+
+            //Sets up the timer for moving objects
+            timer.Interval = TimeSpan.FromMilliseconds(10);
+            timer.Tick += timer_Tick;
+            timer.Start();
         }
+
+
+        private void timer_Tick(object sender, object e)
+        {
+            MoveEnemies();
+        }
+
+        private void MoveEnemies()
+        {
+            var enemies = PlayField.Children.OfType<Rectangle>();
+            foreach(var enemy in enemies)
+            {
+                //Set speed and direction of the movement
+                var speedX = 3;
+                var speedY = 3;
+                var nme = RandomizedEnemies.Where(r => r.Rectangle.Uid == enemy.Uid).FirstOrDefault();
+
+                if (nme.MovingLeft)
+                {
+                    speedX = -speedX;
+                }
+                if(nme.MovingUp)
+                {
+                    speedY = -speedY;
+                }
+
+                //Get current position of the enemy
+                var posX = Canvas.GetLeft(enemy);
+                var posY = Canvas.GetTop(enemy);
+
+                if (posX >= PlayField.Width - enemy.Width)
+                {
+                    speedX = -speedX;
+                    nme.MovingLeft = true;
+                }
+                else if(posX <= 0)
+                {
+                    nme.MovingLeft = false;
+                }
+                if(posY >= PlayField.Height - enemy.Height)
+                {
+                    speedY = -speedY;
+                    nme.MovingUp = true;
+                }
+                else if (posY <= 0)
+                {
+                    nme.MovingUp = false;
+                }
+                Canvas.SetLeft(enemy, posX + speedX);
+                Canvas.SetTop(enemy, posY + speedY);
+            }
+        }
+
 
         private void AddCountries()
         {
@@ -105,6 +173,49 @@ namespace ShootEmAllDown
             }
 
             return RandomizedEnemies;
+        }
+
+        private void PlayField_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            status.Content = "Missed!";
+
+            for (var i = 0; i < PlayField.Children.OfType<Rectangle>().Count(); i++)
+            {
+                var enemy = PlayField.Children[i] as Rectangle;
+                var nme = RandomizedEnemies.Where(r => r.Rectangle.Uid == enemy.Uid).FirstOrDefault();
+                var pos = Mouse.GetPosition(enemy);
+                if ((pos.X <= enemy.Width && pos.X > 0) && (pos.Y <= enemy.Height && pos.Y > 0))
+                {
+                    UpdateEnemy(nme);
+                    if (nme.Energy <= 0)
+                    {
+                        PlayField.Children.Remove(enemy);
+                    }
+                    if (PlayField.Children.OfType<Rectangle>().Count() == 0)
+                    {
+                       status.Content = "You win!";
+                       timer.Stop();
+                    }
+                    else status.Content = nme.Energy.ToString();
+                }
+            }
+        }
+
+        private void UpdateEnemy(Enemy enemy, string weapon = "AA")
+        {
+            var energyLoss = 0.0;
+            switch (weapon)
+            {
+                case "AA":
+                    energyLoss = 0.5;
+                    break;
+            }
+            enemy.Energy -= energyLoss;
+        }
+
+        private void SetDirection(UIElement uIElement)
+        {
+
         }
     }
 }
