@@ -31,7 +31,7 @@ namespace ShootEmAllDown
 
         public MainWindow()
         {
-           
+
             InitializeComponent();
             DataContext = this;
             InitializeGame();
@@ -45,31 +45,45 @@ namespace ShootEmAllDown
             Enemies = new ObservableCollection<Enemy>();
             RandomizedEnemies = new ObservableCollection<Enemy>();
 
-            
+
             var random = new Random();
 
             // Create same amount of enemy types, ten in total.
             // TODO: Maybe randomize so that it's not always the same amount of each type.
+
+            var xDirection = true;
+            var yDirection = true;
             for (var i = 0; i < 10; i++)
             {
-                var lvl = random.Next(1, 5);
+                var lvl = random.Next(1, 3);
                 if (i % 2 == 0)
                 {
                     var country = countries[random.Next(countries.Count() - 1)];
-                    Enemies.Add(new JetFighter(lvl, country));
+                    var jet = new JetFighter(lvl, country);
+                    jet.MovingLeft = xDirection;
+                    jet.MovingUp = yDirection;
+                    Enemies.Add(jet);
                 }
                 else
                 {
                     var planet = planets[random.Next(countries.Count() - 1)];
-                    Enemies.Add(new UFO(lvl, planet));
+                    var ufo = new UFO(lvl, planet);
+                    ufo.MovingLeft = !xDirection;
+                    ufo.MovingUp = !yDirection;
+                    Enemies.Add(ufo);
                 }
+                xDirection = !xDirection;
+                yDirection = !yDirection;
             }
             RandomizedEnemies = UnsortEnemies(Enemies);
 
             foreach (var enemy in RandomizedEnemies)
             {
-                Canvas.SetTop(enemy.Rectangle, random.Next((int)(PlayField.Height - enemy.Rectangle.Height)));
-                Canvas.SetLeft(enemy.Rectangle, random.Next((int)(PlayField.Width - enemy.Rectangle.Width)));
+                //var rndY = random.Next((int)(PlayField.Height - enemy.Rectangle.Height));
+                //var rndX = random.Next((int)(PlayField.Width - enemy.Rectangle.Width));
+
+                Canvas.SetTop(enemy.Rectangle, PlayField.Height / 2);
+                Canvas.SetLeft(enemy.Rectangle, PlayField.Width / 2);
                 PlayField.Children.Add(enemy.Rectangle);
             }
 
@@ -88,43 +102,92 @@ namespace ShootEmAllDown
         private void MoveEnemies()
         {
             var enemies = PlayField.Children.OfType<Rectangle>();
-            foreach(var enemy in enemies)
+            foreach (var enemy in enemies)
             {
                 //Set speed and direction of the movement
-                var speedX = 3;
-                var speedY = 3;
+                var baseSpeed = 5;
+                var speedX = baseSpeed;
+                var speedY = baseSpeed;
+                var collidedWithWall = false;
                 var nme = RandomizedEnemies.Where(r => r.Rectangle.Uid == enemy.Uid).FirstOrDefault();
 
                 if (nme.MovingLeft)
                 {
-                    speedX = -speedX;
+                    speedX = -baseSpeed;
                 }
-                if(nme.MovingUp)
+                if (nme.MovingUp)
                 {
-                    speedY = -speedY;
+                    speedY = -baseSpeed;
                 }
 
                 //Get current position of the enemy
                 var posX = Canvas.GetLeft(enemy);
                 var posY = Canvas.GetTop(enemy);
 
+                //Bounce back if it hits the walls.
                 if (posX >= PlayField.Width - enemy.Width)
                 {
                     speedX = -speedX;
                     nme.MovingLeft = true;
+                    collidedWithWall = true;
                 }
-                else if(posX <= 0)
+                else if (posX <= 0)
                 {
                     nme.MovingLeft = false;
+                    collidedWithWall = true;
                 }
-                if(posY >= PlayField.Height - enemy.Height)
+                if (posY >= PlayField.Height - enemy.Height)
                 {
                     speedY = -speedY;
                     nme.MovingUp = true;
+                    collidedWithWall = true;
                 }
                 else if (posY <= 0)
                 {
                     nme.MovingUp = false;
+                    collidedWithWall = true;
+                }
+
+                //Bounce if it hits one of the other enemies
+                if (!collidedWithWall)
+                {
+                    var rect1 = new Rect() { Height = enemy.Height, Width = enemy.Width, Location = new Point(posX, posY) };
+                    foreach (var rival in enemies)
+                    {
+
+                        var rivalX = Canvas.GetLeft(rival);
+                        var rivalY = Canvas.GetTop(rival);
+                        var rect2 = new Rect() { Height = rival.Height, Width = rival.Width, Location = new Point(rivalX, rivalY) };
+                        var riv = RandomizedEnemies.Where(r => r.Rectangle.Uid == rival.Uid).FirstOrDefault();
+
+                        if (rect1.IntersectsWith(rect2))
+                        {
+                            if (rect1.Left < rect2.Left)
+                            {
+                                speedX = baseSpeed;
+                                riv.MovingLeft = true;
+                                nme.MovingLeft = false;
+                            }
+                            if (rect1.Right > rect2.Right)
+                            {
+                                speedX = -baseSpeed;
+                                riv.MovingLeft = false;
+                                nme.MovingLeft = true;
+                            }
+                            if (rect1.Top > rect2.Top)
+                            {
+                                speedY = baseSpeed;
+                                riv.MovingUp = true;
+                                nme.MovingUp = false;
+                            }
+                            if (rect1.Bottom < rect2.Bottom)
+                            {
+                                speedY = -baseSpeed;
+                                riv.MovingUp = false;
+                                nme.MovingUp = true;
+                            }
+                        }
+                    }
                 }
                 Canvas.SetLeft(enemy, posX + speedX);
                 Canvas.SetTop(enemy, posY + speedY);
@@ -193,8 +256,8 @@ namespace ShootEmAllDown
                     }
                     if (PlayField.Children.OfType<Rectangle>().Count() == 0)
                     {
-                       status.Content = "You win!";
-                       timer.Stop();
+                        status.Content = "You win!";
+                        timer.Stop();
                     }
                     else status.Content = nme.Energy.ToString();
                 }

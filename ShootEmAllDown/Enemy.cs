@@ -38,6 +38,27 @@ namespace ShootEmAllDown
                 Uid = Id.ToString(),
             };
             Rectangle.Stretch = Stretch.Fill;
+            SetDirections();
+        }
+
+        private void SetDirections()
+        {
+            var rnd = new Random();
+
+            var left = rnd.Next(0, 1);
+            var up = rnd.Next(0, 1);
+
+            if (left == 0)
+            {
+                MovingLeft = false;
+            }
+            else MovingLeft = true;
+            if (up == 0)
+            {
+                MovingUp = false;
+            }
+            else MovingUp = true;
+
         }
     }
 }
