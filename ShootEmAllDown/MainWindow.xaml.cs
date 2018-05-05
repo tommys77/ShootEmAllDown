@@ -301,14 +301,14 @@ namespace ShootEmAllDown
             inGame = true;
         }
 
-        public string Time = "0";
-
         private void UpdateTime()
         {
             time = stopWatch.Elapsed;
             current.Content = time.Minutes + "m " + time.Seconds + "s " + time.Milliseconds + "ms";
         }
 
+
+        //When the last enemy is down, the game is over.
         public void GameOver()
         {
             stopWatch.Stop();
