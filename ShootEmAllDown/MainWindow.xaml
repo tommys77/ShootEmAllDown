@@ -6,10 +6,14 @@
         xmlns:local="clr-namespace:ShootEmAllDown"
         xmlns:Properties="clr-namespace:ShootEmAllDown.Properties" x:Class="ShootEmAllDown.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="443.136" Width="735.169">
+        Title="MainWindow" Height="549.444" Width="805.072">
 
-    <Grid>
-        <Canvas x:Name="PlayField" HorizontalAlignment="Left" Height="412" VerticalAlignment="Top" Width="554" MouseLeftButtonDown="PlayField_MouseLeftButtonDown" Cursor="Cross">
+    <Grid Height="519" VerticalAlignment="Top">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="564"/>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Canvas x:Name="PlayField" Grid.Column="0" HorizontalAlignment="Right" Width="544" MouseLeftButtonDown="PlayField_MouseLeftButtonDown" Cursor="Cross" Height="499" VerticalAlignment="Top" Margin="0,10,13,0">
             <Canvas.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FF7CC6E2" Offset="0.115"/>
@@ -19,20 +23,26 @@
                 </LinearGradientBrush>
             </Canvas.Background>
         </Canvas>
-        <ListBox x:Name="lb_enemylist" HorizontalAlignment="Left" Height="310" Margin="559,47,0,0" VerticalAlignment="Top" Width="Auto"  ItemsSource="{Binding RandomizedEnemies, Mode=TwoWay}" >
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Vertical">
-                        <TextBlock Text="{Binding Level}"/>
-                        <TextBlock Text ="{Binding Energy}"/>
-                        <TextBlock Text="{Binding BattleCry}"/>
-                        <TextBlock Text="{Binding Origin}"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <Label Content="Enemy list" HorizontalAlignment="Left" Margin="559,21,0,0" VerticalAlignment="Top" Width="158"/>
-        <Label x:Name="status" Content="" HorizontalAlignment="Left" Height="27" Margin="559,368,0,0" VerticalAlignment="Top" Width="54"/>
+        <StackPanel Orientation="Vertical" Grid.Column="1" Margin="0,10,0,164">
+            <TextBlock Text="Enemies left" />
+            <ListBox Height="316" VerticalAlignment="Top"  ItemsSource="{Binding RandomizedEnemies, Mode=TwoWay}" Margin="0,0,10,0" >
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="{Binding Origin}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+        <Button x:Name="btn_new_game" Content="Start Game" Grid.Column="1" Margin="0,355,10,0" Height="26" VerticalAlignment="Top" IsEnabled="True" Click="btn_new_game_Click"/>
+        <Label x:Name="lbl_Current" Content="Time: " HorizontalAlignment="Left"  Margin="10,386,0,0" VerticalAlignment="Top" Width="54" Grid.Column="1" Height="26"/>
+        <Label x:Name="current" Content="0" Grid.Column="1" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="89,386,0,0" VerticalAlignment="Top" Width="86" Height="26"/>
+        <Label Content="Todays fastest: " Grid.Column="1" HorizontalAlignment="Left" Margin="10,417,0,0" VerticalAlignment="Top" Height="26" Width="78"/>
+        <Label x:Name="todaysFastest" Content="0" Grid.Column="1" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="89,417,0,0" VerticalAlignment="Top" Width="86" Height="26"/>
+        <Label x:Name="status" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="10,464,0,0" VerticalAlignment="Top" Width="205" Height="26"/>
+
+
 
     </Grid>
 </Window>

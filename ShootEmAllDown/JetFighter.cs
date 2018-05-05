@@ -10,7 +10,7 @@ namespace ShootEmAllDown
 {
     public class JetFighter : Enemy
     {
-        public JetFighter(int lvl, string origin) : base(lvl, origin)
+        public JetFighter(int lvl, int speed, string origin) : base(lvl, speed, origin)
         {
             BattleCry = "For " + base.Origin + "!!";
             var imgBrush = new ImageBrush();

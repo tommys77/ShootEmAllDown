@@ -15,6 +15,7 @@ namespace ShootEmAllDown
         public Guid Id { get; }
         public virtual Rectangle Rectangle { get; set; }
         public virtual int Level { get; set; }
+        public virtual int Speed { get; set; }
         public virtual double Energy { get; set; }
         public virtual string BattleCry { get; set; }
         public virtual string Origin { get; set; }
@@ -23,12 +24,13 @@ namespace ShootEmAllDown
         public bool MovingUp { get; set; }
         public bool MovingLeft { get; set; }
 
-        protected Enemy(int lvl, string origin)
+        protected Enemy(int lvl, int speed, string origin)
         {
             Id = Guid.NewGuid();
             Level = lvl;
             Origin = origin;
             Energy = Level * 1.0;
+            Speed = speed;
             BattleCry = "I will destroy you!";
 
             Rectangle = new Rectangle
@@ -38,27 +40,6 @@ namespace ShootEmAllDown
                 Uid = Id.ToString(),
             };
             Rectangle.Stretch = Stretch.Fill;
-            SetDirections();
-        }
-
-        private void SetDirections()
-        {
-            var rnd = new Random();
-
-            var left = rnd.Next(0, 1);
-            var up = rnd.Next(0, 1);
-
-            if (left == 0)
-            {
-                MovingLeft = false;
-            }
-            else MovingLeft = true;
-            if (up == 0)
-            {
-                MovingUp = false;
-            }
-            else MovingUp = true;
-
         }
     }
 }

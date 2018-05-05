@@ -10,7 +10,7 @@ namespace ShootEmAllDown
 {
     public class UFO : Enemy
     {
-        public UFO(int lvl, string origin) : base(lvl, origin)
+        public UFO(int lvl, int speed, string origin) : base(lvl, speed, origin)
         {
             Energy = Level * 1.5;
             BattleCry = "Zlorfgof! I really miss " + Origin + "...";
