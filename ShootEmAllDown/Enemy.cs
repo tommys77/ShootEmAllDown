@@ -35,7 +35,7 @@ namespace ShootEmAllDown
 
             Rectangle = new Rectangle
             {
-                Width = 40,
+                Width = 50,
                 Height = 35,
                 Uid = Id.ToString(),
             };

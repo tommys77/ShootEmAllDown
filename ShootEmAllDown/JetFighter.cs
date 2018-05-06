@@ -10,16 +10,43 @@ namespace ShootEmAllDown
 {
     public class JetFighter : Enemy
     {
+        private BitmapImage leftBitmap { get; set; } = new BitmapImage(new Uri(@"pack://siteoforigin:,,,/Resources/jetfighter_left.png"));
+        private BitmapImage rightBitmap { get; set; } = new BitmapImage(new Uri(@"pack://siteoforigin:,,,/Resources/jetfighter_right.png"));
+        public ImageBrush ImgBrush { get; set; } = new ImageBrush();
+
         public JetFighter(int lvl, int speed, string origin) : base(lvl, speed, origin)
         {
             BattleCry = "For " + base.Origin + "!!";
-            var imgBrush = new ImageBrush();
 
-            imgBrush.ImageSource = new BitmapImage(new Uri(@"pack://siteoforigin:,,,/Resources/jetfighter.png"));
-            Rectangle.Fill = imgBrush;
+            ImgBrush = RightBrush;
+
+            if (MovingLeft)
+            {
+                ImgBrush = LeftBrush;
+            }
+
+            Rectangle.Fill = ImgBrush;
         }
 
-        public override string BattleCry { get => base.BattleCry ; set => base.BattleCry = value; }
+        public ImageBrush LeftBrush
+        {
+            get
+            {
+                ImgBrush.ImageSource = leftBitmap;
+                return ImgBrush;
+            }
+        }
+
+        public ImageBrush RightBrush
+        {
+            get
+            {
+                ImgBrush.ImageSource = rightBitmap;
+                return ImgBrush;
+            }
+        }
+
+        public override string BattleCry { get => base.BattleCry; set => base.BattleCry = value; }
         public override string Origin { get => base.Origin; set => base.Origin = value; }
     }
 }

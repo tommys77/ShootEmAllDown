@@ -202,6 +202,31 @@ namespace ShootEmAllDown
                 }
                 Canvas.SetLeft(enemy, posX + speedX);
                 Canvas.SetTop(enemy, posY + speedY);
+
+
+                //Resets if something unforseen happens and the enemy unintentionally leaves the play area.
+                if (Math.Abs(posX) > 1.3 * PlayField.Width || Math.Abs(posY) > 1.3 * PlayField.Height)
+                {
+                    Canvas.SetLeft(enemy, random.Next((int)enemy.Width, (int)PlayField.Width - (int)enemy.Width));
+                    Canvas.SetTop(enemy, random.Next((int)enemy.Height, (int)PlayField.Height - (int)enemy.Height));
+                }
+                SetNewBrushIfJet(nme);
+            }
+        }
+
+
+        // Jetfighters can't fly in reverse, so this changes the image source dynamically.
+        private void SetNewBrushIfJet(Enemy enemy)
+        {
+            if (enemy is JetFighter)
+            {
+                var jet = enemy as JetFighter;
+                enemy.Rectangle.Fill = jet.RightBrush;
+
+                if (jet.MovingLeft)
+                {
+                    enemy.Rectangle.Fill = jet.LeftBrush;
+                }
             }
         }
 
@@ -248,9 +273,9 @@ namespace ShootEmAllDown
 
         private void PlayField_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            status.Content = "Missed!";
             if (inGame)
             {
+                status.Content = "Missed!";
                 for (var i = 0; i < PlayField.Children.OfType<Rectangle>().Count(); i++)
                 {
                     var enemy = PlayField.Children[i] as Rectangle;
@@ -258,18 +283,20 @@ namespace ShootEmAllDown
                     var pos = Mouse.GetPosition(enemy);
                     if ((pos.X <= enemy.Width && pos.X > 0) && (pos.Y <= enemy.Height && pos.Y > 0))
                     {
+                        status.Content = "That's a hit!";
                         UpdateEnemy(nme);
                         if (nme.Energy <= 0)
                         {
-                            RandomizedEnemies.Remove(nme);
                             PlayField.Children.Remove(enemy);
+                            status.Content = nme.BattleCry;
+                            RandomizedEnemies.Remove(nme);
                         }
                         if (PlayField.Children.OfType<Rectangle>().Count() == 0)
                         {
                             inGame = false;
                             GameOver();
                         }
-                        else status.Content = "That's a hit!";
+
                     }
                 }
             }

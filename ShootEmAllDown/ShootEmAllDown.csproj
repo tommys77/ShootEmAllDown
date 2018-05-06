@@ -139,7 +139,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\crosshair.png" />
-    <Content Include="Resources\jetfighter.png">
+    <Content Include="Resources\jetfighter_left.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\jetfighter_right.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\ufo.png">

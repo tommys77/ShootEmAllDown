@@ -16,10 +16,8 @@
         <Canvas x:Name="PlayField" Grid.Column="0" HorizontalAlignment="Right" Width="544" MouseLeftButtonDown="PlayField_MouseLeftButtonDown" Cursor="Cross" Height="499" VerticalAlignment="Top" Margin="0,10,13,0">
             <Canvas.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#FF7CC6E2" Offset="0.115"/>
-                    <GradientStop Color="#FF446D7D" Offset="0.733"/>
-                    <GradientStop Color="#FF20343B" Offset="1"/>
-                    <GradientStop Color="#FF5E97AD" Offset="0.375"/>
+                    <GradientStop Color="#FF448DAA"/>
+                    <GradientStop Color="#FF41BFE6" Offset="0.977"/>
                 </LinearGradientBrush>
             </Canvas.Background>
         </Canvas>
