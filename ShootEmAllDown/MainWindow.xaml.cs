@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Timers;
@@ -15,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using WMPLib;
 
 namespace ShootEmAllDown
 {
@@ -30,6 +32,15 @@ namespace ShootEmAllDown
         public ObservableCollection<Enemy> RandomizedEnemies { get; set; }
 
         private Random random = new Random();
+
+        private string FX_PATH_HIT = Environment.CurrentDirectory + new Uri(@"pack://siteoforigin:,,,/Resources/hit.wav").AbsolutePath;
+        private string FX_PATH_SHOOT = Environment.CurrentDirectory + new Uri(@"pack://siteoforigin:,,,/Resources/shoot.wav").AbsolutePath;
+        private string FX_PATH_EXPLOSION = Environment.CurrentDirectory + new Uri(@"pack://siteoforigin:,,,/Resources/explosion.wav").AbsolutePath;
+
+        private WindowsMediaPlayer fx_hit;
+        private WindowsMediaPlayer fx_shoot;
+        private WindowsMediaPlayer fx_explosion;
+
 
         private bool inGame = false;
         private static DispatcherTimer timer = new DispatcherTimer();
@@ -47,10 +58,22 @@ namespace ShootEmAllDown
             //Sets up the timer for moving objects
             timer.Interval = TimeSpan.FromMilliseconds(10);
             timer.Tick += timer_Tick;
+
+            //Set a custom the cursor for the play area.
+            string path = Environment.CurrentDirectory + new Uri(@"pack://siteoforigin:,,,/Resources/crosshair.cur").AbsolutePath;
+            PlayField.Cursor = new Cursor(path);
+        }
+
+        private void InitializeSound()
+        {
+            fx_hit = new WindowsMediaPlayer();
+            fx_shoot = new WindowsMediaPlayer();
+            fx_explosion = new WindowsMediaPlayer();
         }
 
         private void InitializeGame()
         {
+            InitializeSound();
             AddCountries();
             AddPlanets();
             Enemies.Clear();
@@ -97,10 +120,10 @@ namespace ShootEmAllDown
                 Canvas.SetLeft(enemy.Rectangle, random.Next((int)(PlayField.Width - enemy.Rectangle.Width)));
                 PlayField.Children.Add(enemy.Rectangle);
             }
-
             StartTiming();
-
         }
+
+
 
         private void timer_Tick(object sender, object e)
         {
@@ -215,7 +238,7 @@ namespace ShootEmAllDown
         }
 
 
-        // Jetfighters can't fly in reverse, so this changes the image source dynamically.
+        // Jet fighters can't fly in reverse, so this changes the image source dynamically.
         private void SetNewBrushIfJet(Enemy enemy)
         {
             if (enemy is JetFighter)
@@ -275,6 +298,7 @@ namespace ShootEmAllDown
         {
             if (inGame)
             {
+                fx_shoot.URL = FX_PATH_SHOOT;
                 status.Content = "Missed!";
                 for (var i = 0; i < PlayField.Children.OfType<Rectangle>().Count(); i++)
                 {
@@ -284,11 +308,13 @@ namespace ShootEmAllDown
                     if ((pos.X <= enemy.Width && pos.X > 0) && (pos.Y <= enemy.Height && pos.Y > 0))
                     {
                         status.Content = "That's a hit!";
+                        fx_hit.URL = FX_PATH_HIT;
                         UpdateEnemy(nme);
                         if (nme.Energy <= 0)
                         {
                             PlayField.Children.Remove(enemy);
                             status.Content = nme.BattleCry;
+                            fx_explosion.URL = FX_PATH_EXPLOSION;
                             RandomizedEnemies.Remove(nme);
                         }
                         if (PlayField.Children.OfType<Rectangle>().Count() == 0)
@@ -296,7 +322,6 @@ namespace ShootEmAllDown
                             inGame = false;
                             GameOver();
                         }
-
                     }
                 }
             }

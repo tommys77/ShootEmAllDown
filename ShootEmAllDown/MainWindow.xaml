@@ -6,14 +6,15 @@
         xmlns:local="clr-namespace:ShootEmAllDown"
         xmlns:Properties="clr-namespace:ShootEmAllDown.Properties" x:Class="ShootEmAllDown.MainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="549.444" Width="805.072">
+        Title="Shoot'em All Down" Height="549.444" Width="805.072"
+        ResizeMode="NoResize">
 
     <Grid Height="519" VerticalAlignment="Top">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="564"/>
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <Canvas x:Name="PlayField" Grid.Column="0" HorizontalAlignment="Right" Width="544" MouseLeftButtonDown="PlayField_MouseLeftButtonDown" Cursor="Cross" Height="499" VerticalAlignment="Top" Margin="0,10,13,0">
+        <Canvas x:Name="PlayField" Grid.Column="0" HorizontalAlignment="Right" Width="544" MouseLeftButtonDown="PlayField_MouseLeftButtonDown" Height="499" VerticalAlignment="Top" Margin="0,10,13,0">
             <Canvas.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FF448DAA"/>
@@ -34,10 +35,10 @@
             </ListBox>
         </StackPanel>
         <Button x:Name="btn_new_game" Content="Start Game" Grid.Column="1" Margin="0,355,10,0" Height="26" VerticalAlignment="Top" IsEnabled="True" Click="btn_new_game_Click"/>
-        <Label x:Name="lbl_Current" Content="Time: " HorizontalAlignment="Left"  Margin="10,386,0,0" VerticalAlignment="Top" Width="54" Grid.Column="1" Height="26"/>
-        <Label x:Name="current" Content="0" Grid.Column="1" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="89,386,0,0" VerticalAlignment="Top" Width="86" Height="26"/>
-        <Label Content="Todays fastest: " Grid.Column="1" HorizontalAlignment="Left" Margin="10,417,0,0" VerticalAlignment="Top" Height="26" Width="78"/>
-        <Label x:Name="todaysFastest" Content="0" Grid.Column="1" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="89,417,0,0" VerticalAlignment="Top" Width="86" Height="26"/>
+        <Label x:Name="lbl_Current" Content="Time: " HorizontalAlignment="Left"  Margin="10,386,0,0" VerticalAlignment="Top" Width="92" Grid.Column="1" Height="26"/>
+        <Label x:Name="current" Content="0" Grid.Column="1" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="107,386,0,0" VerticalAlignment="Top" Width="108" Height="26"/>
+        <Label Content="Todays fastest: " Grid.Column="1" HorizontalAlignment="Left" Margin="10,417,0,0" VerticalAlignment="Top" Height="26" Width="92"/>
+        <Label x:Name="todaysFastest" Content="0" Grid.Column="1" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="107,417,0,0" VerticalAlignment="Top" Width="108" Height="26"/>
         <Label x:Name="status" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="10,464,0,0" VerticalAlignment="Top" Width="205" Height="26"/>
 
 
