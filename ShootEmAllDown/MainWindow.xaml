@@ -6,10 +6,10 @@
         xmlns:local="clr-namespace:ShootEmAllDown"
         xmlns:Properties="clr-namespace:ShootEmAllDown.Properties" x:Class="ShootEmAllDown.MainWindow"
         mc:Ignorable="d"
-        Title="Shoot'em All Down" Height="549.444" Width="805.072"
+        Title="Shoot'em All Down" Height="558.757" Width="805.072"
         ResizeMode="NoResize">
 
-    <Grid Height="519" VerticalAlignment="Top">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="564"/>
             <ColumnDefinition />
@@ -22,9 +22,9 @@
                 </LinearGradientBrush>
             </Canvas.Background>
         </Canvas>
-        <StackPanel Orientation="Vertical" Grid.Column="1" Margin="0,10,0,164">
+        <StackPanel Orientation="Vertical" Grid.Column="1" Margin="0,10,0,242">
             <TextBlock Text="Enemies left" />
-            <ListBox Height="316" VerticalAlignment="Top"  ItemsSource="{Binding RandomizedEnemies, Mode=TwoWay}" Margin="0,0,10,0" >
+            <ListBox Height="249" VerticalAlignment="Top"  ItemsSource="{Binding RandomizedEnemies, Mode=TwoWay}" Margin="0,0,10,0" >
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Vertical">
@@ -34,12 +34,18 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </StackPanel>
-        <Button x:Name="btn_new_game" Content="Start Game" Grid.Column="1" Margin="0,355,10,0" Height="26" VerticalAlignment="Top" IsEnabled="True" Click="btn_new_game_Click"/>
-        <Label x:Name="lbl_Current" Content="Time: " HorizontalAlignment="Left"  Margin="10,386,0,0" VerticalAlignment="Top" Width="92" Grid.Column="1" Height="26"/>
-        <Label x:Name="current" Content="0" Grid.Column="1" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="107,386,0,0" VerticalAlignment="Top" Width="108" Height="26"/>
-        <Label Content="Todays fastest: " Grid.Column="1" HorizontalAlignment="Left" Margin="10,417,0,0" VerticalAlignment="Top" Height="26" Width="92"/>
-        <Label x:Name="todaysFastest" Content="0" Grid.Column="1" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="107,417,0,0" VerticalAlignment="Top" Width="108" Height="26"/>
-        <Label x:Name="status" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="10,464,0,0" VerticalAlignment="Top" Width="205" Height="26"/>
+        <Button x:Name="btn_new_game" Content="Start Game" Grid.Column="1" Margin="0,483,10,0" Height="26" VerticalAlignment="Top" IsEnabled="True" Click="btn_new_game_Click"/>
+        <Label x:Name="lbl_Current" Content="Time: " HorizontalAlignment="Left"  Margin="0,282,0,0" VerticalAlignment="Top" Width="99" Grid.Column="1" Height="26"/>
+        <Label x:Name="current" Content="0" Grid.Column="1" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="104,282,0,0" VerticalAlignment="Top" Width="116" Height="26"/>
+        <Label Content="Todays best: " Grid.Column="1" HorizontalAlignment="Left" Margin="0,406,0,0" VerticalAlignment="Top" Height="26" Width="99"/>
+        <Label x:Name="todays_best" Content="0" Grid.Column="1" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="104,406,0,0" VerticalAlignment="Top" Width="116" Height="26"/>
+        <Label x:Name="status" Content="" Grid.Column="1" HorizontalAlignment="Center" HorizontalContentAlignment="Center" Margin="0,437,15,0" VerticalAlignment="Top" Width="220" Height="26"/>
+        <Label Content="Total hits:" Grid.Column="1" HorizontalAlignment="Left" Margin="0,313,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="total_hits" Content="0" Grid.Column="1" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="104,313,0,0" VerticalAlignment="Top" Width="116"/>
+        <Label  Content="Total misses:" Grid.Column="1" HorizontalAlignment="Left" Margin="0,344,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="total_misses" Content="0" Grid.Column="1" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="109,344,0,0" VerticalAlignment="Top" Width="111"/>
+        <Label Content="Total score:" Grid.Column="1" HorizontalAlignment="Left" Margin="0,375,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="total_score" Content="0" Grid.Column="1" HorizontalAlignment="Left" HorizontalContentAlignment="Right" Margin="104,375,0,0" VerticalAlignment="Top" Width="116"/>
 
 
 

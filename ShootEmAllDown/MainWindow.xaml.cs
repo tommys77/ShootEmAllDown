@@ -123,12 +123,11 @@ namespace ShootEmAllDown
             StartTiming();
         }
 
-
-
         private void timer_Tick(object sender, object e)
         {
             MoveEnemies();
             UpdateTime();
+            UpdateStatistics();
         }
 
         private void MoveEnemies()
@@ -137,7 +136,6 @@ namespace ShootEmAllDown
             foreach (var enemy in enemies)
             {
                 //Set speed and direction of the movement
-
                 var collidedWithWall = false;
                 var nme = RandomizedEnemies.Where(r => r.Rectangle.Uid == enemy.Uid).FirstOrDefault();
 
@@ -158,7 +156,7 @@ namespace ShootEmAllDown
                 var posX = Canvas.GetLeft(enemy);
                 var posY = Canvas.GetTop(enemy);
 
-                //Bounce back if it hits the walls.
+                //Bounce back/turn around if it hits the walls.
                 if (posX >= PlayField.Width - enemy.Width)
                 {
                     speedX = -speedX;
@@ -237,8 +235,7 @@ namespace ShootEmAllDown
             }
         }
 
-
-        // Jet fighters can't fly in reverse, so this changes the image source dynamically.
+        // Jet fighters can't fly backwards obviously, so this changes the imagesource dynamically.
         private void SetNewBrushIfJet(Enemy enemy)
         {
             if (enemy is JetFighter)
@@ -294,12 +291,19 @@ namespace ShootEmAllDown
             return RandomizedEnemies;
         }
 
+
+        // Need to keep track of hits and misses to calculate a final score.
+        private int totalHits = 0;
+        private int totalMisses = 0;
+        private int todaysBest = 0;
+
         private void PlayField_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (inGame)
             {
                 fx_shoot.URL = FX_PATH_SHOOT;
                 status.Content = "Missed!";
+                totalMisses += 1;
                 for (var i = 0; i < PlayField.Children.OfType<Rectangle>().Count(); i++)
                 {
                     var enemy = PlayField.Children[i] as Rectangle;
@@ -308,6 +312,8 @@ namespace ShootEmAllDown
                     if ((pos.X <= enemy.Width && pos.X > 0) && (pos.Y <= enemy.Height && pos.Y > 0))
                     {
                         status.Content = "That's a hit!";
+                        totalHits += 1;
+                        totalMisses -= 1;
                         fx_hit.URL = FX_PATH_HIT;
                         UpdateEnemy(nme);
                         if (nme.Energy <= 0)
@@ -323,9 +329,18 @@ namespace ShootEmAllDown
                             GameOver();
                         }
                     }
+                    
                 }
+                
             }
         }
+
+        private void UpdateStatistics()
+        {
+            total_hits.Content = totalHits;
+            total_misses.Content = totalMisses;
+        }
+            
 
         private void UpdateEnemy(Enemy enemy, string weapon = "AA")
         {
@@ -366,17 +381,34 @@ namespace ShootEmAllDown
             stopWatch.Stop();
             timer.Stop();
             status.Content = "Victory!";
-            if (time < fastest || fastest.Milliseconds == 0)
-            {
-                fastest = time;
-            }
-            todaysFastest.Content = fastest.Minutes + "m " + fastest.Seconds + "s " + fastest.Milliseconds + "ms";
+            //if (time < fastest || fastest.Milliseconds == 0)
+            //{
+            //    fastest = time;
+            //}
+            CalculateTotalScore();
             btn_new_game.IsEnabled = true;
+            
+        }
+
+        private void CalculateTotalScore()
+        {
+            var bonus = (float) totalHits / totalMisses;
+            var totalScore = (int)(time.TotalMilliseconds * bonus);
+            total_score.Content = totalScore;
+            if(todaysBest < totalScore || todaysBest == 0)
+            {
+                todaysBest = totalScore;
+                todays_best.Content = todaysBest;
+            }
         }
 
         private void btn_new_game_Click(object sender, RoutedEventArgs e)
         {
+            totalHits = 0;
+            totalMisses = 0;
+            UpdateStatistics();
             InitializeGame();
+            
             btn_new_game.IsEnabled = false;
         }
     }
